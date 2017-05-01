@@ -177,16 +177,11 @@ defmodule PhoenixInlineSvg.Helpers do
   def svg_image(conn, name, collection) do
     "#{collection}/#{name}.svg"
     |> read_svg_file(conn)
-    |> wrap_svg(collection, name)
     |> safety_string()
   end
 
   defp safety_string(html) do
     {:safe, html}
-  end
-
-  defp wrap_svg(svg_contents, cat, name) do
-    "<i class='#{cat}-svgs #{cat}-#{name}-svg'>#{svg_contents}</i>"
   end
 
   defp read_svg_from_path(path) do
@@ -205,7 +200,7 @@ defmodule PhoenixInlineSvg.Helpers do
     [
       Application.app_dir(Phoenix.Controller.endpoint_module(conn).config(:otp_app)),
       config_or_default(:dir, "priv/static/svg/"),
-      icon_path
+      # icon_path
     ]
     |> Path.join()
     |> read_svg_from_path()
