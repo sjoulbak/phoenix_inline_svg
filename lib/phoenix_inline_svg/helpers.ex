@@ -119,7 +119,7 @@ defmodule PhoenixInlineSvg.Helpers do
             [svgs_path, collection, name]
             |> Path.join()
             |> read_svg_from_path()
-            |> wrap_svg(collection, name)
+            # |> wrap_svg(collection, name)
             |> safety_string()
           )
         end
