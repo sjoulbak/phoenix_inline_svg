@@ -200,7 +200,7 @@ defmodule PhoenixInlineSvg.Helpers do
     [
       Application.app_dir(Phoenix.Controller.endpoint_module(conn).config(:otp_app)),
       config_or_default(:dir, "priv/static/svg/"),
-      # icon_path
+      icon_path
     ]
     |> Path.join()
     |> read_svg_from_path()
