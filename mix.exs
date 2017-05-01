@@ -24,7 +24,7 @@ defmodule PhoenixInlineSvg.Mixfile do
   end
 
   defp deps do
-    [{:phoenix, "~> 1.2"},
+    [{:phoenix, "~> 1.3.0-rc"},
      {:inch_ex, "~> 0.5", only: [:dev, :test]},
      {:credo, "~> 0.5", only: [:dev, :test]},
      {:excoveralls, "~> 0.5", only: [:dev, :test]},
