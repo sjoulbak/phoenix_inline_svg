@@ -119,7 +119,7 @@ defmodule PhoenixInlineSvg.Helpers do
             [svgs_path, collection, name]
             |> Path.join()
             |> read_svg_from_path()
-            |> wrap_svg(collection, name)
+            # |> wrap_svg(collection, name)
             |> safety_string()
           )
         end
@@ -177,16 +177,11 @@ defmodule PhoenixInlineSvg.Helpers do
   def svg_image(conn, name, collection) do
     "#{collection}/#{name}.svg"
     |> read_svg_file(conn)
-    |> wrap_svg(collection, name)
     |> safety_string()
   end
 
   defp safety_string(html) do
     {:safe, html}
-  end
-
-  defp wrap_svg(svg_contents, cat, name) do
-    "<i class='#{cat}-svgs #{cat}-#{name}-svg'>#{svg_contents}</i>"
   end
 
   defp read_svg_from_path(path) do
