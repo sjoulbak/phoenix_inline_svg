@@ -119,7 +119,6 @@ defmodule PhoenixInlineSvg.Helpers do
             [svgs_path, collection, name]
             |> Path.join()
             |> read_svg_from_path()
-            |> wrap_svg(collection, name)
             |> safety_string()
           )
         end
@@ -150,15 +149,16 @@ defmodule PhoenixInlineSvg.Helpers do
     ```
 
   """
-  def svg_image(conn, name) do
-    svg_image(conn, name, config_or_default(:default_collection, "generic"))
+  def svg_image(conn, name), do: svg_image(conn, name, %{wrap: false})
+  def svg_image(conn, name, opts) when is_map(opts) do
+    svg_image(conn, name, config_or_default(:default_collection, "generic"), opts)
   end
 
   @doc """
   Sends the contents of the SVG file `name` in the directory.
 
-  Returns a safe HTML string with the contents of the SVG file
-  wrapped in an `i` HTML element with classes.
+  Returns a safe HTML string with the contents of the SVG file. This will be
+  wrapped in an `i` HTML element with classes when wrap is true.
 
   ## Examples
 
@@ -174,10 +174,11 @@ defmodule PhoenixInlineSvg.Helpers do
     ```
 
   """
-  def svg_image(conn, name, collection) do
+  def svg_image(conn, name, collection, opts \\ %{wrap: false}) do
     "#{collection}/#{name}.svg"
-    |> read_svg_file(conn)
-    |> wrap_svg(collection, name)
+    |> svg_path(conn)
+    |> read_svg_from_path()
+    |> wrap_svg(collection, name, opts)
     |> safety_string()
   end
 
@@ -185,9 +186,10 @@ defmodule PhoenixInlineSvg.Helpers do
     {:safe, html}
   end
 
-  defp wrap_svg(svg_contents, cat, name) do
+  defp wrap_svg(svg_contents, cat, name, %{wrap: true}) do
     "<i class='#{cat}-svgs #{cat}-#{name}-svg'>#{svg_contents}</i>"
   end
+  defp wrap_svg(svg_contents, _cat, _name, _opts), do: svg_contents
 
   defp read_svg_from_path(path) do
     case File.read(path) do
@@ -196,19 +198,26 @@ defmodule PhoenixInlineSvg.Helpers do
       {:error, _} ->
         config_or_default(:not_found,
           "<svg viewbox='0 0 60 60'>" <>
-          "<text x='0' y='40' font-size='30' font-weight='bold'" <>
+          "<text x='0' y='40' font-size='30' font-weight='bold' " <>
           "font-family='monospace'>Err</text></svg>")
     end
   end
 
-  defp read_svg_file(icon_path, conn) do
+  defp svg_path(icon_path, conn) do
     [
-      Application.app_dir(Phoenix.Controller.endpoint_module(conn).config(:otp_app)),
+      application_path(conn),
       config_or_default(:dir, "priv/static/svg/"),
       icon_path
     ]
     |> Path.join()
-    |> read_svg_from_path()
+  end
+
+  defp application_path(conn) do
+    try do
+      Application.app_dir(Phoenix.Controller.endpoint_module(conn).config(:otp_app))
+    rescue
+      KeyError -> ""
+    end
   end
 
   defp config_or_default(config, default) do
