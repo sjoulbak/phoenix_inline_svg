@@ -24,10 +24,10 @@ defmodule PhoenixInlineSvg.Mixfile do
   end
 
   defp deps do
-    [{:phoenix, "~> 1.2"},
-     {:inch_ex, "~> 0.5", only: [:dev, :test]},
-     {:credo, "~> 0.5", only: [:dev, :test]},
-     {:excoveralls, "~> 0.5", only: [:dev, :test]},
+    [{:phoenix, ">= 1.2.0"},
+     {:inch_ex, ">= 0.5.0", only: [:dev, :test]},
+     {:credo, ">= 0.5.0", only: [:dev, :test]},
+     {:excoveralls, ">= 0.5.0", only: [:dev, :test]},
      {:ex_doc, ">= 0.0.0", only: [:dev, :test]}]
   end
 
